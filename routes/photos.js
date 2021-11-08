@@ -53,18 +53,6 @@ router.post('/', async (req, res) => {
     }
 })
 
-router
-    .route("/:id")
-    .get((req, res) => {    
-        res.send(`Get user with id ${req.params.id}`)
-    })
-    .put((req, res) => {    
-        res.send(`Update user with id ${req.params.id}`)
-    })
-    .delete((req, res) => {    
-        res.send(`Delete user with id ${req.params.id}`)
-    })
-
 async function renderNewPage(res, photo, hasError = false) {
     try {
         const users = await user.find({})

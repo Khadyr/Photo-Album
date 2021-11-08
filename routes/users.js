@@ -26,8 +26,6 @@ router.get("/new", (req, res) =>{
     res.render('users/new', { user: new User() })
 })
 
-//let locals = { errorMessage: 'Error creating User'}
-
 // Create User Route
 router.post('/', async (req, res) => {
     const user = new User({
@@ -62,6 +60,7 @@ router.get('/:id/edit', async (req, res) => {
         const user = await User.findById(req.params.id)
         res.render('users/edit', { user: user })
     } catch (error) {
+        console.log(error)
         res.redirect('/users')
     }    
 })

@@ -46,23 +46,101 @@ router.post('/', async (req, res) => {
 
     try {
         const newPhoto = await photo.save()
-        //res.redirect(`photos/${newPhoto.id}`)
-        res.redirect(`photos`)
+        res.redirect(`photos/${newPhoto.id}`)
     } catch (error) {               
         renderNewPage(res, photo, true)
     }
 })
 
+
+// Show Photo Route
+router.get('/:id', async (req, res) => {
+    try {
+        const photo = await Photo.findById(req.params.id).populate('user').exec()
+        res.render('photos/show', { photo: photo })
+    } catch (error) {
+        res.redirect('/')
+    }
+})
+
+// Edit Photo Route
+router.get("/:id/edit", async (req, res) =>{
+    try {
+        const photo = await Photo.findById(req.params.id)
+        renderEditPage(res, photo)
+    } catch (error) {
+        res.redirect('/') 
+    }    
+})
+
+// Update Photo Route
+router.put('/:id', async (req, res) => {    
+    let photo
+
+    try {
+        photo = await Photo.findById(req.params.id)
+        photo.title = req.body.title
+        photo.user = req.body.user
+        photo.publishDate = new Date(req.body.publishDate)
+        photo.pageCount = req.body.pageCount
+        photo.description = req.body.description
+        if (req.body.cover != null && req.body.cover !== '') {
+            saveCover(photo, req.body.cover)
+        }
+        await photo.save()
+        res.redirect(`/photos/${photo.id}`)
+    } catch (error) {   
+        if (photo != null) {
+            renderEditPage(res, photo, true)
+        } else {
+            redirect('/')
+        }     
+       
+    }
+})
+
+// Delete Photo Page
+router.delete('/:id', async (req, res) => {
+    let photo
+    try {
+        photo = await Photo.findById(req.params.id)
+        await photo.remove()
+        res.redirect('/photos')
+    } catch (error) {
+        if (photo != null) {
+            res.render('photos/show', {
+                photo: photo,
+                errorMessage: 'Could not remove photo'
+            })
+        } else {
+            res.redirect('/')
+        }
+    }
+})
+
 async function renderNewPage(res, photo, hasError = false) {
+    renderFormPage(res, photo, 'new', hasError)
+}
+
+async function renderEditPage(res, photo, hasError = false) {
+    renderFormPage(res, photo, 'edit', hasError)
+}
+
+async function renderFormPage(res, photo, form, hasError = false) {
     try {
         const users = await user.find({})
-        const photo = new Photo()
         const params = {
             users: users,
             photo: photo
         }
-        if (hasError) params.errorMessage = 'Error Uploading Photo'
-        res.render('photos/new', params)
+        if (hasError) {
+            if (form === 'edit') {
+                params.errorMessage = 'Error Updating photo'
+            } else {
+                params.errorMessage = 'Error Uploading photo'
+            }
+        }        
+        res.render(`photos/${form}`, params)
     } catch (error) {
         res.redirect('/photos')
     }

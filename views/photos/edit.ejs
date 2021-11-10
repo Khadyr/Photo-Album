@@ -1,0 +1,6 @@
+<h2>Edit Photo</h2>
+<form action="/photos/<%= photo.id %>?_method=PUT" method="POST">
+    <%- include('_form_fields') %> 
+    <a href="/photos">Cancel</a>
+    <button type="submit">Update</button>
+</form>

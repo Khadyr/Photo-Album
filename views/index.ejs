@@ -1,6 +1,8 @@
 <h2>Recently Added</h2>
 <div>
     <% photos.forEach(photo => { %>
-        <img height="150" width="100" src="<%= photo.coverImagePath %>">
+        <a href="/photos/<%= photo.id %>">
+            <img height="150" width="100" src="<%= photo.coverImagePath %>">
+        </a>        
     <% }) %> 
 </div>

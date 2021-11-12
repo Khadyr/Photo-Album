@@ -1,6 +1,8 @@
 <h2 class="page-header">Upload Photo</h2>
 <form action="/photos" method="POST">
     <%- include('_form_fields') %> 
-    <a href="/photos">Cancel</a>
-    <button type="submit">Create</button>
+    <div class="form-row form-row-end btn-row">
+        <a class="btn btn-danger" href="/photos">Cancel</a>
+        <button class="btn btn-primary" type="submit">Create</button>
+    </div>    
 </form>

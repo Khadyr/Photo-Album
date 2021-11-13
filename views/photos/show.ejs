@@ -1,10 +1,21 @@
 <h2 class="page-header"><%= photo.title %> </h2>
-<img width="100" height="150" src="<%= photo.coverImagePath %> ">
-<div>User: <%= photo.user.name %></div>
-<div>Publish Date: <%= photo.publishDate.toDateString() %></div>
-<div>Page Count: <%= photo.pageCount %></div>
-<div>Description: <%= photo.description %></div>
-
-<a href="/photos/<%= photo.id %>/edit">Edit</a>
-<%- include('../partials/deleteForm', { url: `/photos/${photo.id}` }) %>
-<a href="/users/<%= photo.user.id %>">View User</a>
+<div class="photo-details">
+    <div>
+        <img class="photo-cover" src="<%= photo.coverImagePath %> ">
+        <div class="photo-details-btn-grid">
+            <a class="btn btn-primary" href="/photos/<%= photo.id %>/edit">Edit</a>
+            <%- include('../partials/deleteForm', { url: `/photos/${photo.id}` }) %>
+            <a class="btn btn-primary photo-details-user-button" href="/users/<%= photo.user.id %>">View User</a>
+        </div>        
+    </div>
+    <div class="photo-details-grid">
+        <div class="photo-details-label">User:</div>
+        <div><%= photo.user.name %></div>
+        <div class="photo-details-label">Publish Date:</div>
+        <div><%= photo.publishDate.toDateString() %></div>
+        <div class="photo-details-label">Page Count:</div>
+        <div><%= photo.pageCount %></div>
+        <div class="photo-details-label">Description:</div>
+        <div><%= photo.description %></div>
+    </div>
+</div>

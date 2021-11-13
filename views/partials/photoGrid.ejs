@@ -1,0 +1,9 @@
+<% photoCoverClass = locals.large ? 'photo-cover-large' : '' %>
+<% photoGridClass = locals.large ? 'photo-grid-large' : '' %>
+<div class="photo-grid <%= photoGridClass %>">
+    <% photos.forEach(photo => { %>
+        <a href="/photos/<%= photo.id %>">
+            <img class="photo-cover <%= photoCoverClass %>" src="<%= photo.coverImagePath %>">
+        </a>        
+    <% }) %>
+</div>

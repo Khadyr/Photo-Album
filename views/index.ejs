@@ -1,8 +1,2 @@
 <h2 class="page-header">Recently Added</h2>
-<div>
-    <% photos.forEach(photo => { %>
-        <a href="/photos/<%= photo.id %>">
-            <img height="150" width="100" src="<%= photo.coverImagePath %>">
-        </a>        
-    <% }) %> 
-</div>
+<%- include('partials/photoGrid', { photos: photos, large: true}) %>

@@ -5,9 +5,5 @@
 </div>
 <% if (photosByUser.length > 0) { %>
     <h2 class="page-header">Photos by User</h2>
-    <% photosByUser.forEach(photo => { %>
-        <a href="/photos/<%= photo.id %>">
-            <img height="150" width="100" src="<%= photo.coverImagePath %>">
-        </a>        
-    <% }) %> 
+    <%- include('../partials/photoGrid', { photos: photosByUser }) %>
 <% } %> 

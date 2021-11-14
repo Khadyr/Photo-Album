@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const User = require('../models/user')
 const Photo = require('../models/photo')
+const bcrypt = require('bcrypt')
 
 // GET Users Route
 router.get("/", async (req, res) => {
@@ -28,8 +29,11 @@ router.get("/new", (req, res) =>{
 
 // Create User Route
 router.post('/', async (req, res) => {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
     const user = new User({
-        name: req.body.name
+        name: req.body.name,
+        email: req.body.email,
+        password: hashedPassword
     })
     try {
         const newUser = await user.save()

@@ -12,8 +12,8 @@ const photoSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    pageCount: {
-        type: Number,
+    geolocation: {
+        type: String,
         required: true
     },
     createdAt: {

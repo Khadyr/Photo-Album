@@ -3,6 +3,16 @@ const router = express.Router()
 const User = require('../models/user')
 const Photo = require('../models/photo')
 const bcrypt = require('bcrypt')
+const passport = require('passport')
+
+const initializePassport = require('../passport-config')
+initializePassport(
+    passport, 
+    email => users.find(user => user.email === email),
+    id => users.find(user => user.id === id)
+)
+
+const users = []
 
 // GET Users Route
 router.get("/", async (req, res) => {
@@ -23,12 +33,12 @@ router.get("/", async (req, res) => {
 })
 
 // New User Route
-router.get("/new", (req, res) =>{
-    res.render('users/new', { user: new User() })
+router.get("/register", (req, res) =>{
+    res.render('users/register', { user: new User() })
 })
 
 // Create User Route
-router.post('/', async (req, res) => {
+router.post('/', checkNotAuthenticated, async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
     const user = new User({
         name: req.body.name,
@@ -37,56 +47,31 @@ router.post('/', async (req, res) => {
     })
     try {
         const newUser = await user.save()
-        res.redirect(`users/${newUser.id}`)        
+        users.push({
+            id: Date.now().toString(),
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPassword
+        })
+        res.redirect('/users/login')        
     } catch (error) {
-        res.render('users/new', {
+        console.log(error)
+        res.render('users/register', {
             user: user,
             errorMessage: 'Error creating User'              
         })
     }     
 })
 
-router.get('/:id', async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id)
-        const photos = await Photo.find({ user: user.id }).limit(6).exec()
-        res.render('users/show', {
-            user: user,
-            photosByUser: photos
-        })
-    } catch (error) {
-        res.redirect('/')
-    }
+router.get('/login', checkNotAuthenticated, (req, res) => {
+    res.render('users/login')
 })
 
-router.get('/:id/edit', async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id)
-        res.render('users/edit', { user: user })
-    } catch (error) {
-        console.log(error)
-        res.redirect('/users')
-    }    
-})
-
-router.put('/:id', async (req, res) => {  
-    let user  
-    try {
-        user = await User.findById(req.params.id)
-        user.name = req.body.name
-        await user.save()
-        res.redirect(`/users/${user.id}`)        
-    } catch (error) {
-        if (user == null) {
-            res.redirect('/')
-        } else {
-            res.render('users/edit', {
-                user: user,
-                errorMessage: 'Error updating User'              
-            })
-        }        
-    } 
-})
+router.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/users/login',
+    failureFlash: true
+}))
 
 router.delete('/:id', async (req,res) => {
     let user  
@@ -103,5 +88,18 @@ router.delete('/:id', async (req,res) => {
     } 
 })
 
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next()
+    }
+    res.redirect('/login')
+}
+
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/')
+    }
+    next()
+}
 
 module.exports = router

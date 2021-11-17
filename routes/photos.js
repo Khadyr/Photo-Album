@@ -23,6 +23,7 @@ router.get("/", async (req, res) => {
             searchOptions: req.query
         })
     } catch (error) {
+        
         res.redirect('/')
     }    
 }) 
@@ -32,13 +33,18 @@ router.get("/new", async (req, res) =>{
     renderNewPage(res, new Photo())
 })
 
+// Shared Photo page
+router.get('/shared', (req, res) => {
+    res.render('photos/shared')
+})
+
 // Create Photo Route
 router.post('/', async (req, res) => {    
     const photo = new Photo({
         title: req.body.title,
         user: req.body.user,
         publishDate: new Date(req.body.publishDate),
-        pageCount: req.body.pageCount,        
+        geolocation: req.body.geolocation,        
         description: req.body.description
     })
 
@@ -59,6 +65,7 @@ router.get('/:id', async (req, res) => {
         const photo = await Photo.findById(req.params.id).populate('user').exec()
         res.render('photos/show', { photo: photo })
     } catch (error) {
+        console.log(error)
         res.redirect('/')
     }
 })
@@ -82,7 +89,7 @@ router.put('/:id', async (req, res) => {
         photo.title = req.body.title
         photo.user = req.body.user
         photo.publishDate = new Date(req.body.publishDate)
-        photo.pageCount = req.body.pageCount
+        photo.geolocation = req.body.geolocation
         photo.description = req.body.description
         if (req.body.cover != null && req.body.cover !== '') {
             saveCover(photo, req.body.cover)
@@ -117,6 +124,8 @@ router.delete('/:id', async (req, res) => {
         }
     }
 })
+
+
 
 async function renderNewPage(res, photo, hasError = false) {
     renderFormPage(res, photo, 'new', hasError)

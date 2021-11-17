@@ -17,16 +17,10 @@ const indexRouter = require('./routes/index')
 const userRouter = require('./routes/users')
 const photoRouter = require('./routes/photos')
 
-const initializePassport = require('./passport-config')
-initializePassport(
-    passport, 
-    email => users.find(user => user.email === email),
-    id => users.find(user => user.id === id)
-)
-
-const users = []
-
 app.set('view engine', 'ejs')
+app.set('views', __dirname + '/views')
+app.set('layout', 'layouts/layout')
+app.use(expressLayouts)
 app.use(express.urlencoded({ extended: false }))
 app.use(flash())
 app.use(session({
@@ -36,65 +30,9 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
-app.set('views', __dirname + '/views')
-app.set('layout', 'layouts/layout')
-app.use(expressLayouts)
 app.use(methodOverride('_method'))
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
-
-app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index.ejs', { name: req.user.name })
-})
-
-app.get('/login', checkNotAuthenticated, (req, res) => {
-    res.render('login.ejs')
-})
-
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true
-}))
-
-app.get('/register', checkNotAuthenticated, (req, res) => {
-    res.render('register.ejs')
-})
-
-app.post('/register', checkNotAuthenticated, async (req, res) => {
-    try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        users.push({
-            id: Date.now().toString(),
-            name: req.body.name,
-            email: req.body.email,
-            password: hashedPassword
-        })
-        res.redirect('/login')
-    } catch (error) {
-        console.log(error)
-        res.redirect('/register')
-    }
-})
-
-app.delete('/logout', (req, res) => {
-    req.logOut()
-    res.redirect('/login')
-})
-
-function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next()
-    }
-    res.redirect('/login')
-}
-
-function checkNotAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return res.redirect('/')
-    }
-    next()
-}
 
 const mongoose = require('mongoose')
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true })

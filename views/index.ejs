@@ -1,5 +1,2 @@
 <h2 class="page-header">Recently Added</h2>
-<%/* include('partials/photoGrid', { photos: photos, large: true}) */%>
-<form action="/logout?_method=DELETE" method="POST">
-    <button type="submit">Log Out</button>
-</form>
+<%- include('partials/photoGrid', { photos: photos, large: true}) %>

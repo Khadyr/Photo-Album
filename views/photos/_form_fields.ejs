@@ -18,12 +18,12 @@
 </div>
 <div class="form-row"> 
     <div class="form-item">
-        <label>Publish Date</label>
+        <label>Captured Date</label>
         <input type="date" name="publishDate" value="<%= photo.publishDate == null ? '' : photo.publishDate.toISOString().split('T')[0]%>">
     </div>
     <div class="form-item">
-        <label>Page Count</label>
-        <input type="number" name="pageCount" min="1" value="<%= photo.pageCount %>">
+        <label>Geolocation</label>
+        <input type="text" name="geolocation" value="<%= photo.geolocation %>">
     </div>
 </div>
 <div class="form-row">
@@ -32,8 +32,8 @@
         <input type="file" name="cover" class="photo-cover filepond">
     </div>
     <div class="form-item">
-        <label>Description</label>
-        <textarea name="description"><%= photo.description %> </textarea>
+        <label>Tags</label>
+        <textarea name="description"><%= photo.description %></textarea>
     </div>
 </div>
 

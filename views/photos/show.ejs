@@ -9,13 +9,13 @@
         </div>        
     </div>
     <div class="photo-details-grid">
-        <div class="photo-details-label">User:</div>
+        <div class="photo-details-label">Captured by:</div>
         <div><%= photo.user.name %></div>
-        <div class="photo-details-label">Publish Date:</div>
+        <div class="photo-details-label">Captured Date:</div>
         <div><%= photo.publishDate.toDateString() %></div>
-        <div class="photo-details-label">Page Count:</div>
-        <div><%= photo.pageCount %></div>
-        <div class="photo-details-label">Description:</div>
+        <div class="photo-details-label">Geolocation:</div>
+        <div><%= photo.geolocation %></div>
+        <div class="photo-details-label">Tags:</div>
         <div><%= photo.description %></div>
     </div>
 </div>

@@ -6,9 +6,9 @@ const express = require("express")
 const router = require("./routes/users")
 const app = express()
 const bcrypt = require('bcrypt')
-//const passport = require('passport')
-// const flash = require('express-flash')
-// const session = require('express-session')
+const passport = require('passport')
+const flash = require('express-flash')
+const session = require('express-session')
 const expressLayouts = require('express-ejs-layouts')
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
@@ -22,14 +22,14 @@ app.set('views', __dirname + '/views')
 app.set('layout', 'layouts/layout')
 app.use(expressLayouts)
 app.use(express.urlencoded({ extended: false }))
-// app.use(flash())
-// app.use(session({
-//     secret: process.env.SESSION_SECRET,
-//     resave: false,
-//     saveUninitialized: false
-// }))
-// app.use(passport.initialize())
-// app.use(passport.session())
+app.use(flash())
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}))
+app.use(passport.initialize())
+app.use(passport.session())
 app.use(methodOverride('_method'))
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))

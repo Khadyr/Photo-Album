@@ -30,6 +30,11 @@ router.get("/", async (req, res) => {
     
 })
 
+// Login route
+router.get('/login', (req, res) => {
+    res.render('users/login')
+})
+
 // New User Route
 router.get("/register", (req, res) =>{
     res.render('users/register', { user: new User() })

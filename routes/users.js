@@ -3,16 +3,14 @@ const router = express.Router()
 const User = require('../models/user')
 const Photo = require('../models/photo')
 const bcrypt = require('bcrypt')
-const passport = require('passport')
+// const passport = require('passport')
 
-const initializePassport = require('../passport-config')
-initializePassport(
-    passport, 
-    email => users.find(user => user.email === email),
-    id => users.find(user => user.id === id)
-)
-
-const users = []
+// const initializePassport = require('../passport-config')
+// initializePassport(
+//     passport, 
+//     email => users.find(user => user.email === email),
+//     id => users.find(user => user.id === id)
+// )
 
 // GET Users Route
 router.get("/", async (req, res) => {
@@ -38,7 +36,7 @@ router.get("/register", (req, res) =>{
 })
 
 // Create User Route
-router.post('/', checkNotAuthenticated, async (req, res) => {
+router.post('/',    async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
     const user = new User({
         name: req.body.name,
@@ -47,12 +45,12 @@ router.post('/', checkNotAuthenticated, async (req, res) => {
     })
     try {
         const newUser = await user.save()
-        users.push({
-            id: Date.now().toString(),
-            name: req.body.name,
-            email: req.body.email,
-            password: hashedPassword
-        })
+        // users.push({
+        //     id: Date.now().toString(),
+        //     name: req.body.name,
+        //     email: req.body.email,
+        //     password: hashedPassword
+        // })
         res.redirect('/users/login')        
     } catch (error) {
         console.log(error)
@@ -63,15 +61,15 @@ router.post('/', checkNotAuthenticated, async (req, res) => {
     }     
 })
 
-router.get('/login', checkNotAuthenticated, (req, res) => {
-    res.render('users/login')
-})
+// router.get('/login', checkNotAuthenticated, (req, res) => {
+//     res.render('users/login')
+// })
 
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/users/login',
-    failureFlash: true
-}))
+// router.post('/login', passport.authenticate('local', {
+//     successRedirect: '/',
+//     failureRedirect: '/users/login',
+//     failureFlash: true
+// }))
 
 router.delete('/:id', async (req,res) => {
     let user  
@@ -88,18 +86,18 @@ router.delete('/:id', async (req,res) => {
     } 
 })
 
-function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next()
-    }
-    res.redirect('/login')
-}
+// function checkAuthenticated(req, res, next) {
+//     if (req.isAuthenticated()) {
+//         return next()
+//     }
+//     res.redirect('/login')
+// }
 
-function checkNotAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return res.redirect('/')
-    }
-    next()
-}
+// function checkNotAuthenticated(req, res, next) {
+//     if (req.isAuthenticated()) {
+//         return res.redirect('/')
+//     }
+//     next()
+// }
 
 module.exports = router

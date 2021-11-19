@@ -22,8 +22,7 @@ router.get("/", async (req, res) => {
             photos: photos,
             searchOptions: req.query
         })
-    } catch (error) {
-        
+    } catch (error) {        
         res.redirect('/')
     }    
 }) 

@@ -48,6 +48,7 @@ router.post('/',    async (req, res) => {
         email: req.body.email,
         password: hashedPassword
     })
+    console.log(user)
     try {
         const newUser = await user.save()
         // users.push({
